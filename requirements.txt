@@ -1,0 +1,2 @@
+pyutilb >= 1.0.8
+jsonpickle >= 3.0.4
