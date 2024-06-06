@@ -16,7 +16,7 @@ pip3 install async4jsonrpc
 # Features
 
 * Compliant with the JSON-RPC 2.0 specification
-* High performance by asyncio
+* High performance by asyncio and coroutine
 * Json serialization support via [jsonpickle](https://jsonpickle.github.io/)
 
 ## Usage
@@ -79,3 +79,6 @@ async def call_object_rpc():
 
 asyncio.run(call_object_rpc())
 ```
+
+## TODO
+1. improve 

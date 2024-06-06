@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import json
 import jsonpickle
@@ -141,7 +142,7 @@ class JSONHandler(object):
             self.role = '[Server]'
         else:
             self.role = '[Client]'
-        self._lock = threading.Lock() # 写锁
+        self._lock = asyncio.Lock() # 写锁
 
     def write_int(self, v):
         '''
@@ -160,12 +161,12 @@ class JSONHandler(object):
         v = int.from_bytes(bs, byteorder='little', signed=False)
         return v
 
-    def write_json(self, v):
+    async def write_json(self, v):
         '''
         写json
           先写字节长度，然后写字节
         '''
-        with self._lock:
+        async with self._lock:
             if not isinstance(v, str):
                 v = dump_json(v)  # 先转json
             log.debug('%s write json: %s', self.role, v)

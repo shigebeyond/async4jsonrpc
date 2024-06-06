@@ -90,7 +90,7 @@ class JsonRpcRequestHandler(JSONHandler):
         if not params_match_signature(func, req.params):
             raise Exception('Invalid params')
         # 调用方法
-        if asyncio.iscoroutinefunction(func):
+        if asyncio.iscoroutinefunction(func): # 协程方法的调用要await
             result = await call_with_params(func, req.params)
         else:
             result = call_with_params(func, req.params)
@@ -123,5 +123,5 @@ class JsonRpcRequestHandler(JSONHandler):
                 err = f'Server error:{e}, trace:{traceback.format_exc()}'
                 resp = Response(err=err, id=req.id)
             # 4 写响应
-            self.write_json(resp.json())
+            await self.write_json(resp.json())
             await self.writer.drain()  # flush清空套接字

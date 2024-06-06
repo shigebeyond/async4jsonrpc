@@ -18,7 +18,7 @@ class JsonRpcClient:
         self.port = port
         self._conn = None # 连接
         self.futures: Dict[int, Future] = {} # 记录请求id对应的异步响应
-        self._lock = threading.Lock()
+        self._lock = asyncio.Lock()
 
     async def lazy_conn(self):
         '''
@@ -26,7 +26,7 @@ class JsonRpcClient:
             加锁保证线程安全
         '''
         if self._conn is None:
-            with self._lock:
+            async with self._lock:
                 # 双重检查
                 if self._conn is None:
                     reader, writer = await asyncio.open_connection(self.host, self.port)
@@ -80,7 +80,7 @@ class JsonRpcClient:
         # 等待异步结果
         await future
         del self.futures[id]
-        return future.result
+        return future.result()
 
 class JsonRpcConn(JSONHandler):
     '''
@@ -121,7 +121,7 @@ class JsonRpcConn(JSONHandler):
         '''
         发请求
         '''
-        self.write_json(req.json())
+        await self.write_json(req.json())
         await self.writer.drain()  # flush清空套接字
 
     def on_response_received(self, resp: Response) -> None:

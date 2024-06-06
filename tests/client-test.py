@@ -1,5 +1,7 @@
 import asyncio
 import time
+from pyutilb.log import log
+log.setLevel('info')
 from pyutilb import EventLoopThreadPool
 from async4jsonrpc.client import JsonRpcClient
 from tests.thing import Thing
@@ -8,7 +10,7 @@ client = JsonRpcClient('127.0.0.1', 8080)
 
 async def call_rpc(i):
     r = await client.ping(f'hello {i}')
-    print(r)
+    print(f"call_rpc ( {i} ) = {r}")
 
 # 简单单次调用
 def simple_call():
@@ -35,5 +37,5 @@ def object_call():
 
 if __name__ == '__main__':
     # simple_call()
-    # multi_threads_call()
-    object_call()
+    multi_threads_call()
+    # object_call()
